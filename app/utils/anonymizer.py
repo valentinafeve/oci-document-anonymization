@@ -1,5 +1,6 @@
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
+import io
 
 def xyxy_to_xywh(x1, y1, x2, y2):
     return x1, y1, x2 - x1, y2 - y1
@@ -9,8 +10,7 @@ def xyxy_to_cxcywh(x1, y1, x2, y2):
 
 def anonymize(image, words):
     fig, ax = plt.subplots()
-
-    height, width = image.width, image.height
+    width, height = image.width, image.height
 
     ax.imshow(image)
 
@@ -23,10 +23,10 @@ def anonymize(image, words):
         
         rect = patches.Rectangle((x * width, y * height), w * width, h * height, linewidth=1, edgecolor='white', facecolor='white')
 
-        # ax.text(cx * width, cy * height, word["text"], horizontalalignment='center',
-        # verticalalignment='center', fontsize=6, color='black', fontfamily="Tahoma")
-        # Add the patch to the Axes
         ax.add_patch(rect)
 
-    plt.savefig('output.png')
-    plt.show()
+    ax.set_axis_off()
+
+    buffer = io.BytesIO()  # use buffer memory
+    plt.savefig(buffer, format="png", bbox_inches='tight', pad_inches=0)
+    return buffer
