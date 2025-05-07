@@ -4,6 +4,11 @@ import re
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 
+def clean_chars(text):
+    # Remove ,. and replace with blank
+    text = re.sub(r'[,.]', '', text)
+    return text
+
 def xyxy_to_xywh(x1, y1, x2, y2):
     return x1, y1, x2 - x1, y2 - y1
 
@@ -36,12 +41,19 @@ def anonymize(image, words):
 
 def filter_pii_words(words, pii_words):
     filtered_pii_words = []
+    i = 0
+    current_pii_word = pii_words[0]
     for word in words:
         if validate_cuit(word["text"]):
             filtered_pii_words.append(word)
-        if (word["text"] in pii_words):
+
+        if (clean_chars(word["text"]) == clean_chars(current_pii_word)):
             filtered_pii_words.append(word)
-            pii_words.remove(word["text"])
+            
+            i += 1
+            if i >= len(pii_words):
+                break
+            current_pii_word = pii_words[i]
     return filtered_pii_words
 
 def validate_cuit(cuit):

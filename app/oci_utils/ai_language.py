@@ -22,3 +22,14 @@ def detect_language_pii_entities(text):
         ]
     )).data
     return pii
+
+def detect_language_entities(text):
+    entities = ai_language_client.detect_language_entities(oci.ai_language.models.BatchDetectLanguageEntitiesDetails(
+        documents=[
+            oci.ai_language.models.TextDocument(
+                key="1",
+                text=text
+            )
+        ]
+    )).data.entities
+    return entities
