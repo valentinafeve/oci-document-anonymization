@@ -9,7 +9,7 @@ from oci_utils.document_understanding import extract_text, get_output_location
 from oci_utils.object_storage import get_file, list_files, upload_file
 from oci_utils.ai_language import detect_domain_language, detect_language_key_phrases, detect_language_pii_entities
 from io import BytesIO
-from utils.anonymizer import anonymize, filter_pii_words
+from utils.anonymizer import anonymize, filter_pii_words, is_a_number
 from PIL import Image
 from pdf2image import convert_from_bytes
 
@@ -51,6 +51,8 @@ if file := col1.file_uploader('Upload a PDF file', type='pdf'):
     pii_words = []
     for sentence in pii_words_list:
         for word in sentence:
+            if is_a_number(word):
+                continue
             pii_words.append(word)
     col1.header("PII entities")
     col1.text(', '.join(pii_words))

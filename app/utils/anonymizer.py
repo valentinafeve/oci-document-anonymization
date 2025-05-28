@@ -6,8 +6,12 @@ import matplotlib.pyplot as plt
 
 def clean_chars(text):
     # Remove ,. and replace with blank
-    text = re.sub(r'[,.]', '', text)
+    text = re.sub(r'[,.)(]', '', text)
     return text
+
+def is_a_number(text):
+    # Check if the text is a number
+    return re.match(r'^\d+(\.\d+)?$', text) is not None
 
 def xyxy_to_xywh(x1, y1, x2, y2):
     return x1, y1, x2 - x1, y2 - y1
@@ -52,8 +56,10 @@ def filter_pii_words(words, pii_words):
             
             i += 1
             if i >= len(pii_words):
+                print("All PII words were found")
                 break
             current_pii_word = pii_words[i]
+
     return filtered_pii_words
 
 def validate_cuit(cuit):
